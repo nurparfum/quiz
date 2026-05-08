@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nur Parfum — Quiz Olfativo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #f0ebe5;
+    --bg-card: #ffffff;
+    --text: #2d2d2d;
+    --text-secondary: #6b6b6b;
+    --text-muted: #9a9a9a;
+    --burgundy: #7b1e2b;
+    --burgundy-light: rgba(123, 30, 43, 0.08);
+    --burgundy-soft: rgba(123, 30, 43, 0.15);
+    --border: rgba(0,0,0,0.08);
+    --border-hover: rgba(123, 30, 43, 0.3);
+    --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    --shadow-hover: 0 8px 32px rgba(123, 30, 43, 0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== INTRO LIMPIO ===== */
+  .intro {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 32px;
+    text-align: center;
+  }
+
+  .intro-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    margin-bottom: 24px;
+  }
+
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--burgundy);
+    font-weight: 500;
+  }
+
+  .intro-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    max-width: 340px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .btn-primary {
+    background: var(--burgundy);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 18px 44px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: #5c1620;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 12px;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-header {
+    padding: 32px 28px 16px;
+    text-align: center;
+  }
+
+  .quiz-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .quiz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .quiz-title em {
+    font-style: italic;
+    color: var(--burgundy);
+  }
+
+  .progress-wrap {
+    padding: 0 28px 24px;
+  }
+
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--burgundy);
+    transition: width 0.5s ease;
+    width: 0%;
+    border-radius: 3px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .questions-area {
+    flex: 1;
+    padding: 0 28px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .question-card {
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+
+  .question-card.active {
+    display: block;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-num {
+    font-size: 11px;
+    color: var(--burgundy);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+
+  .question-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .option:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .option:active {
+    transform: scale(0.98);
+  }
+
+  .option-idx {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--burgundy);
+    min-width: 26px;
+    margin-top: 1px;
+  }
+
+  .option-body {
+    flex: 1;
+  }
+
+  .option-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .option-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* ===== RESULTS ===== */
+  .results {
+    display: none;
+    padding: 24px 28px 48px;
+    animation: fadeSlide 0.5s ease;
+  }
+
+  .results.active {
+    display: block;
+  }
+
+  .results-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .results-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .results-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .results-title em {
+    font-style: italic;
+    color: var(--burgundy);
+  }
+
+  .results-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  /* Mapa */
+  .mini-map {
+    margin: 20px 0 24px;
+    padding: 18px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .mini-map-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .map-cell {
+    background: var(--bg-card);
+    padding: 14px 8px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    position: relative;
+  }
+
+  .map-cell.active {
+    background: var(--burgundy-light);
+    color: var(--burgundy);
+    font-weight: 600;
+  }
+
+  .map-cell.active::after {
+    content: '●';
+    position: absolute;
+    top: 4px; right: 6px;
+    font-size: 8px;
+    color: var(--burgundy);
+  }
+
+  /* Perfume cards */
+  .perfume-result {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .perfume-result.best {
+    border-color: var(--burgundy-soft);
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--burgundy-light) 100%);
+  }
+
+  .result-header-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 18px 12px;
+  }
+
+  .result-rank {
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--burgundy);
+    flex-shrink: 0;
+  }
+
+  .perfume-result.best .result-rank {
+    background: var(--burgundy);
+    border-color: var(--burgundy);
+    color: #fff;
+  }
+
+  .result-meta {
+    flex: 1;
+  }
+
+  .result-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .result-brand {
+    font-size: 11px;
+    color: var(--burgundy);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  .result-match {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .match-pct {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--burgundy);
+    line-height: 1;
+  }
+
+  .match-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .result-bar-wrap {
+    padding: 0 18px 12px;
+  }
+
+  .result-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .result-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--burgundy), #a63d4d);
+    border-radius: 2px;
+    transition: width 1s ease;
+    width: 0%;
+  }
+
+  .result-details {
+    padding: 12px 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .detail-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .detail-tag {
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: var(--bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  .detail-tag.highlight {
+    border-color: var(--burgundy-soft);
+    color: var(--burgundy);
+    background: var(--burgundy-light);
+  }
+
+  .result-ref {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+
+  .result-ref strong {
+    color: var(--text-secondary);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .result-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--burgundy);
+  }
+
+  .result-notes {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .result-notes span {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* CTA */
+  .cta-block {
+    margin-top: 28px;
+    padding: 24px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .cta-block p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .footer-brand {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding-bottom: 24px;
+  }
+
+  @media (max-height: 700px) {
+    .intro { padding: 32px 24px; }
+    .intro-title { font-size: 28px; }
+    .question-text { font-size: 22px; }
+  }
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- INTRO LIMPIO -->
+  <div id="intro" class="intro">
+    <div class="intro-logo">Nur Parfum</div>
+    <h1 class="intro-title">Quiz <em>Olfativo</em></h1>
+    <p class="intro-sub">Respondé 6 preguntas y descubrí qué fragancia de nuestro catálogo se ajusta a tu perfil.</p>
+    <button class="btn-primary" onclick="startQuiz()">Comenzar</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" style="display:none; flex-direction:column; min-height:100vh;">
+    <div class="quiz-header">
+      <div class="quiz-label">Nur Parfum</div>
+      <h2 class="quiz-title">Guía olfativa <em>personalizada</em></h2>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span id="progressStep">Paso 1</span><span id="progressTotal">de 6</span></div>
+    </div>
+
+    <div class="questions-area" id="questionsBox"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="results">
+    <div class="results-header">
+      <div class="results-label">Resultado</div>
+      <h2 class="results-title">Tu perfume <em>ideal</em></h2>
+      <p class="results-sub">Top 3 del catálogo según tu perfil olfativo.</p>
+    </div>
+
+    <div id="miniMap" class="mini-map">
+      <div class="mini-map-title">Universo Olfativo</div>
+      <div class="map-grid">
+        <div class="map-cell" id="map-fresco-seco">Fresco / Seco</div>
+        <div class="map-cell" id="map-fresco-dulce">Fresco / Dulce</div>
+        <div class="map-cell" id="map-intenso-seco">Intenso / Seco</div>
+        <div class="map-cell" id="map-intenso-dulce">Intenso / Dulce</div>
+      </div>
+    </div>
+
+    <div id="topPerfumes"></div>
+
+    <div class="cta-block">
+      <p>¿Te gustó tu resultado?<br>Consultá disponibilidad y precio por WhatsApp.</p>
+      <a class="btn-primary" href="https://wa.me/5491135602817?text=Hola%20Nur%20Parfum%2C%20hice%20el%20quiz%20olfativo%20y%20quiero%20consultar%20por%20mi%20perfume%20ideal" target="_blank" style="display:inline-block;text-decoration:none;">Consultar</a>
+      <button class="btn-ghost" onclick="restartQuiz()" style="display:block;margin:12px auto 0;">Rehacer quiz</button>
+    </div>
+
+    <div class="footer-brand">Nur Parfum</div>
+  </div>
+
+</div>
+
+<script>
+// ================================
+// DATA: 55 perfumes (misma data V2/V3)
+// ================================
+const perfumes = [
+  { id:1, nombre:"ODYSSEY Limoni", marca:"Armaf", precio:60000, genero:"Unisex", familia:"Fresca", ref:"Dolce & Gabbana Light Blue", notasSalida:["limón","bergamota","mandarina"], notasCorazon:["jazmín","rosa"], notasFondo:["almizcle","cedro"], intensidad:3, dulzura:2, frescura:9, sofisticacion:5, versatilidad:9, beast:2, duracion:6, estaciones:["verano","primavera"], ocasiones:["diario","oficina","verano"], personalidad:["fresco","limpio","juvenil"], perfilX: 2, perfilY: 8 },
+  { id:2, nombre:"ODYSSEY Mandarine Sky Elixir", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Frutal", ref:"Dior Homme Intense / D&G The One", notasSalida:["mandarina","naranja"], notasCorazon:["iris","lavanda"], notasFondo:["cuero","ambroxan"], intensidad:5, dulzura:5, frescura:6, sofisticacion:6, versatilidad:7, beast:4, duracion:7, estaciones:["otoño","primavera"], ocasiones:["noche","cita"], personalidad:["elegante","cálido","sensual"], perfilX: 5, perfilY: 5 },
+  { id:3, nombre:"ODYSSEY Mega", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Fresca", ref:"Paco Rabanne 1 Million Prive / CH Bad Boy", notasSalida:["menta","lavanda"], notasCorazon:["salvia","canela"], notasFondo:["amberwood","vainilla"], intensidad:6, dulzura:4, frescura:6, sofisticacion:6, versatilidad:7, beast:5, duracion:7, estaciones:["otoño","invierno"], ocasiones:["noche","cita"], personalidad:["audaz","moderno","atractivo"], perfilX: 4, perfilY: 6 },
+  { id:4, nombre:"ODYSSEY Spectra", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Especiada", ref:"CH Men Prive / Spicebomb Night Vision", notasSalida:["pimienta","toronja"], notasCorazon:["cuero","salvia"], notasFondo:["pachulí","vetiver"], intensidad:7, dulzura:4, frescura:4, sofisticacion:7, versatilidad:6, beast:6, duracion:8, estaciones:["invierno","otoño"], ocasiones:["noche","evento"], personalidad:["audaz","misterioso","intenso"], perfilX: 4, perfilY: 3 },
+  { id:5, nombre:"ODYSSEY Tyrant", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Fresca", ref:"Bvlgari Tygar / Acqua di Gio Profondo + Sauvage", notasSalida:["pomelo","bergamota"], notasCorazon:["jengibre","aguamarina"], notasFondo:["madera","ámbar"], intensidad:6, dulzura:3, frescura:8, sofisticacion:7, versatilidad:8, beast:5, duracion:7, estaciones:["verano","primavera","otoño"], ocasiones:["diario","oficina","noche"], personalidad:["fresco","poderoso","versátil"], perfilX: 3, perfilY: 7 },
+  { id:6, nombre:"ODYSSEY Wild One", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Especiada", ref:"Carolina Herrera CH Men Privé", notasSalida:["pomelo","cardamomo"], notasCorazon:["lavanda","salvia"], notasFondo:["cuero","pachulí"], intensidad:7, dulzura:4, frescura:4, sofisticacion:7, versatilidad:6, beast:6, duracion:8, estaciones:["otoño","invierno"], ocasiones:["noche","cita"], personalidad:["seductor","elegante","nocturno"], perfilX: 4, perfilY: 3 },
+  { id:7, nombre:"ODYSSEY Chocolate Dubai", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Gourmand", ref:"Carolina Herrera Bad Boy Extreme", notasSalida:["cacao","pimienta"], notasCorazon:["jazmín","cedro"], notasFondo:["vainilla","haba tonka"], intensidad:8, dulzura:9, frescura:2, sofisticacion:6, versatilidad:5, beast:7, duracion:9, estaciones:["invierno","otoño"], ocasiones:["noche","cita","evento"], personalidad:["dulce","intenso","adictivo"], perfilX: 8, perfilY: 2 },
+  { id:8, nombre:"ODYSSEY Homme", marca:"Armaf", precio:60000, genero:"Masculino", familia:"Amaderada", ref:"Tom Ford Noir Extreme", notasSalida:["azafrán","nuez moscada"], notasCorazon:["kulfi","rosa"], notasFondo:["vainilla","ámbar","sándalo"], intensidad:7, dulzura:5, frescura:3, sofisticacion:8, versatilidad:6, beast:6, duracion:8, estaciones:["invierno","otoño"], ocasiones:["noche","evento","cita"], personalidad:["sofisticado","cálido","elegante"], perfilX: 5, perfilY: 3 },
+  { id:9, nombre:"CLUB DE NUIT Untold", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Gourmand", ref:"MFK Baccarat Rouge 540", notasSalida:["azafrán","jazmín"], notasCorazon:["almendra","ámbar"], notasFondo:["madera de cedro","almizcle","resina"], intensidad:9, dulzura:8, frescura:2, sofisticacion:9, versatilidad:6, beast:9, duracion:10, estaciones:["invierno","otoño","primavera"], ocasiones:["evento","noche","cita"], personalidad:["elite","único","adictivo"], perfilX: 8, perfilY: 2 },
+  { id:10, nombre:"CLUB DE NUIT Iconic", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Floral", ref:"Chanel Bleu de Chanel", notasSalida:["cítricos","pimienta"], notasCorazon:["jengibre","nutmeg"], notasFondo:["sándalo","cedro","incienso"], intensidad:6, dulzura:4, frescura:6, sofisticacion:8, versatilidad:9, beast:5, duracion:7, estaciones:["primavera","verano","otoño"], ocasiones:["diario","oficina","noche"], personalidad:["elegante","versátil","refinado"], perfilX: 4, perfilY: 5 },
+  { id:11, nombre:"CLUB DE NUIT Intense Man", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Frutal", ref:"Creed Aventus", notasSalida:["piña","bergamota","grosella negra"], notasCorazon:["abedul","pachulí","jazmín"], notasFondo:["musk","ambroxan","vetiver"], intensidad:8, dulzura:5, frescura:6, sofisticacion:8, versatilidad:7, beast:8, duracion:9, estaciones:["primavera","verano","otoño"], ocasiones:["noche","evento","diario"], personalidad:["poderoso","audaz","icónico"], perfilX: 5, perfilY: 5 },
+  { id:12, nombre:"CLUB DE NUIT Woman", marca:"Armaf", precio:65000, genero:"Femenino", familia:"Floral", ref:"Chanel Coco Mademoiselle", notasSalida:["naranja","bergamota"], notasCorazon:["rosa","jazmín"], notasFondo:["pachulí","vetiver","vainilla"], intensidad:6, dulzura:5, frescura:6, sofisticacion:8, versatilidad:8, beast:5, duracion:7, estaciones:["primavera","otoño","verano"], ocasiones:["diario","oficina","noche"], personalidad:["elegante","femenina","clásica"], perfilX: 5, perfilY: 5 },
+  { id:13, nombre:"CLUB DE NUIT Urban Man Elixir", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Amaderada", ref:"Prada Luna Rossa Carbon", notasSalida:["bergamota","pimienta"], notasCorazon:["lavanda","tierra húmeda"], notasFondo:["pachulí","ámbar"], intensidad:6, dulzura:3, frescura:6, sofisticacion:7, versatilidad:8, beast:5, duracion:7, estaciones:["primavera","verano","otoño"], ocasiones:["diario","oficina","noche"], personalidad:["urbano","moderno","limpio"], perfilX: 3, perfilY: 5 },
+  { id:14, nombre:"CLUB DE NUIT Sillage", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Floral", ref:"Versace Pour Homme Dylan Blue", notasSalida:["bergamota","grosella negra"], notasCorazon:["hoja de higuera","pachulí"], notasFondo:["incienso","sándalo","almizcle"], intensidad:6, dulzura:4, frescura:6, sofisticacion:7, versatilidad:8, beast:6, duracion:7, estaciones:["primavera","verano","otoño"], ocasiones:["diario","oficina","noche"], personalidad:["versátil","fresco","sutil"], perfilX: 4, perfilY: 5 },
+  { id:15, nombre:"CLUB DE NUIT Milestone", marca:"Armaf", precio:65000, genero:"Masculino", familia:"Fresca", ref:"Creed Millésime Impérial", notasSalida:["frutas marinas","bergamota"], notasCorazon:["iris","mandarina"], notasFondo:["musk","sándalo","ámbar"], intensidad:5, dulzura:4, frescura:7, sofisticacion:8, versatilidad:8, beast:5, duracion:6, estaciones:["verano","primavera"], ocasiones:["diario","oficina","verano"], personalidad:["refinado","marino","elegante"], perfilX: 4, perfilY: 6 },
+  { id:16, nombre:"CLUB DE NUIT Maleka", marca:"Armaf", precio:65000, genero:"Femenino", familia:"Floral", ref:"Parfums de Marly Delina Exclusif", notasSalida:["litchi","ruibarbo","nuez moscada"], notasCorazon:["rosa turca","peonía","vainilla"], notasFondo:["musk","vetiver","cedro"], intensidad:7, dulzura:6, frescura:4, sofisticacion:9, versatilidad:6, beast:7, duracion:8, estaciones:["otoño","invierno","primavera"], ocasiones:["evento","noche","cita"], personalidad:["sofisticada","única","femenina"], perfilX: 6, perfilY: 4 },
+  { id:17, nombre:"9PM Rebel", marca:"Armaf", precio:55000, genero:"Masculino", familia:"Oriental", ref:"Creed Aventus Absolu", notasSalida:["pimienta rosa","bergamota","naranja"], notasCorazon:["pachulí","jazmín","sándalo"], notasFondo:["musk","ámbar gris","benjuí"], intensidad:8, dulzura:6, frescura:4, sofisticacion:8, versatilidad:6, beast:7, duracion:9, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","evento","cita"], personalidad:["rebelde","poderoso","nocturno"], perfilX: 6, perfilY: 3 },
+  { id:18, nombre:"YARA Moi", marca:"Lattafa", precio:60000, genero:"Femenino", familia:"Gourmand", ref:"Narciso Rodriguez Fleur Musc", notasSalida:["frutas rojas","pimienta rosa"], notasCorazon:["rosa","musk","peonía"], notasFondo:["vainilla","pachulí","ámbar"], intensidad:6, dulzura:8, frescura:4, sofisticacion:7, versatilidad:6, beast:5, duracion:7, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","cita","evento"], personalidad:["dulce","femenina","cálida"], perfilX: 7, perfilY: 4 },
+  { id:19, nombre:"Ameerat Al Arab", marca:"Lattafa", precio:55000, genero:"Femenino", familia:"Floral", ref:"Armani Acqua di Gioia", notasSalida:["limón","menta"], notasCorazon:["jazmín","peonía","rosa"], notasFondo:["azúcar","cedro","labdanum"], intensidad:5, dulzura:4, frescura:7, sofisticacion:6, versatilidad:7, beast:4, duracion:6, estaciones:["primavera","verano"], ocasiones:["diario","oficina","verano"], personalidad:["fresca","femenina","luminosa"], perfilX: 4, perfilY: 6 },
+  { id:20, nombre:"ART OF UNIVERSE", marca:"Lattafa", precio:55000, genero:"Unisex", familia:"Floral", ref:"Ex Nihilo Blue Talisman", notasSalida:["bergamota","mandarina","pimienta rosa"], notasCorazon:["flor de naranjo","jazmín","magnolia"], notasFondo:["sándalo","musk","vetiver"], intensidad:6, dulzura:5, frescura:6, sofisticacion:8, versatilidad:7, beast:5, duracion:7, estaciones:["primavera","verano","otoño"], ocasiones:["diario","oficina","evento"], personalidad:["artístico","sofisticado","único"], perfilX: 5, perfilY: 5 },
+  { id:21, nombre:"Asad Black", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Amaderada", ref:"Christian Dior Sauvage", notasSalida:["bergamota","pimienta"], notasCorazon:["lavanda","pachulí","elemi"], notasFondo:["ambroxan","cedro","vetiver"], intensidad:7, dulzura:3, frescura:6, sofisticacion:7, versatilidad:8, beast:7, duracion:8, estaciones:["primavera","verano","otoño","invierno"], ocasiones:["diario","noche","oficina"], personalidad:["poderoso","fresco","masculino"], perfilX: 3, perfilY: 6 },
+  { id:22, nombre:"BHARARA King Gold", marca:"Lattafa", precio:75000, genero:"Masculino", familia:"Oriental", ref:"Versace Eros / 1 Million Privé", notasSalida:["menta","manzana verde","limón"], notasCorazon:["ambroxan","geranio"], notasFondo:["vainilla","cedro","vetiver"], intensidad:9, dulzura:7, frescura:4, sofisticacion:8, versatilidad:5, beast:9, duracion:10, estaciones:["invierno","otoño"], ocasiones:["noche","evento","cita"], personalidad:["rey","intenso","seductor"], perfilX: 7, perfilY: 3 },
+  { id:23, nombre:"ECLAIRE Dorado", marca:"Lattafa", precio:60000, genero:"Femenino", familia:"Gourmand", ref:"Giardini Di Toscana Bianco Latte / Lattafa Eclaire", notasSalida:["caramelo","naranja"], notasCorazon:["praliné","jazmín"], notasFondo:["vainilla","sándalo","musk"], intensidad:7, dulzura:9, frescura:3, sofisticacion:7, versatilidad:5, beast:6, duracion:8, estaciones:["invierno","otoño"], ocasiones:["noche","cita","evento"], personalidad:["dulce","cálida","adictiva"], perfilX: 8, perfilY: 3 },
+  { id:24, nombre:"FAKHAR Black", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Amaderada", ref:"Yves Saint Laurent Y Le Parfum", notasSalida:["manzana","jengibre"], notasCorazon:["sálvia","hinojo","jazmín"], notasFondo:["vetiver","cedro","amberwood"], intensidad:6, dulzura:4, frescura:5, sofisticacion:7, versatilidad:7, beast:5, duracion:7, estaciones:["otoño","primavera","invierno"], ocasiones:["diario","oficina","noche"], personalidad:["moderno","elegante","versátil"], perfilX: 4, perfilY: 4 },
+  { id:25, nombre:"FAKHAR Rose", marca:"Lattafa", precio:45000, genero:"Femenino", familia:"Floral", ref:"Jean Paul Gaultier So Scandal!", notasSalida:["naranja","mandarina"], notasCorazon:["rosa","jazmín","gardenia"], notasFondo:["sándalo","vainilla","musk"], intensidad:6, dulzura:6, frescura:5, sofisticacion:6, versatilidad:6, beast:5, duracion:7, estaciones:["primavera","otoño","verano"], ocasiones:["noche","cita","diario"], personalidad:["romántica","femenina","juguetona"], perfilX: 6, perfilY: 4 },
+  { id:26, nombre:"HAWAS Fire", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Especiada", ref:"Christian Dior Fahrenheit", notasSalida:["mandarina","lavanda"], notasCorazon:["violeta","jazmín","nutmeg"], notasFondo:["cuero","vetiver","pachulí"], intensidad:7, dulzura:3, frescura:4, sofisticacion:7, versatilidad:6, beast:6, duracion:8, estaciones:["otoño","invierno"], ocasiones:["noche","evento","cita"], personalidad:["audaz","intenso","diferente"], perfilX: 3, perfilY: 3 },
+  { id:27, nombre:"HAWAS Ice", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Fresca", ref:"Paco Rabanne Invictus Aqua", notasSalida:["toronja","bergamota","notas acuáticas"], notasCorazon:["bayas","jazmín"], notasFondo:["madera","ámbar","musk"], intensidad:5, dulzura:3, frescura:8, sofisticacion:6, versatilidad:8, beast:4, duracion:6, estaciones:["verano","primavera"], ocasiones:["diario","oficina","verano","gym"], personalidad:["fresco","energético","juvenil"], perfilX: 3, perfilY: 7 },
+  { id:28, nombre:"GOURMAND Vainilla Freak", marca:"Lattafa", precio:45000, genero:"Femenino", familia:"Gourmand", ref:"Kayali Vanilla Candy / Lattafa French Coffee", notasSalida:["vainilla","azúcar"], notasCorazon:["praliné","café","caramelo"], notasFondo:["sándalo","musk","ámbar"], intensidad:7, dulzura:10, frescura:2, sofisticacion:6, versatilidad:4, beast:6, duracion:8, estaciones:["invierno","otoño"], ocasiones:["noche","cita","casa"], personalidad:["dulce","cómoda","adictiva"], perfilX: 9, perfilY: 2 },
+  { id:29, nombre:"KHAMRAH", marca:"Lattafa", precio:55000, genero:"Unisex", familia:"Gourmand", ref:"Xerjoff Erba Pura", notasSalida:["cítricos","especias"], notasCorazon:["frutas","flores"], notasFondo:["musk","ámbar","maderas"], intensidad:8, dulzura:8, frescura:4, sofisticacion:8, versatilidad:6, beast:7, duracion:9, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","evento","cita"], personalidad:["rico","exótico","memorable"], perfilX: 7, perfilY: 3 },
+  { id:30, nombre:"MAYAR Cherry Intense", marca:"Lattafa", precio:55000, genero:"Femenino", familia:"Floral", ref:"Tom Ford Lost Cherry", notasSalida:["cereza","almendra amarga","licor"], notasCorazon:["cereza","rosa","jazmín"], notasFondo:["sándalo","vetiver","cedro"], intensidad:7, dulzura:8, frescura:3, sofisticacion:8, versatilidad:5, beast:6, duracion:8, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","cita","evento"], personalidad:["sofisticada","juguetona","única"], perfilX: 7, perfilY: 3 },
+  { id:31, nombre:"MAYAR", marca:"Lattafa", precio:45000, genero:"Femenino", familia:"Floral", ref:"Parfums de Marly Delina", notasSalida:["litchi","ruibarbo","bergamota"], notasCorazon:["rosa turca","musk","peonía"], notasFondo:["vainilla","vetiver","cashmeran"], intensidad:6, dulzura:6, frescura:5, sofisticacion:7, versatilidad:6, beast:5, duracion:7, estaciones:["primavera","otoño","verano"], ocasiones:["noche","cita","diario"], personalidad:["femenina","elegante","romántica"], perfilX: 6, perfilY: 4 },
+  { id:32, nombre:"MAYAR Natural Intense", marca:"Lattafa", precio:45000, genero:"Femenino", familia:"Floral", ref:"Giorgio Armani Air di Gioia", notasSalida:["limón","neroli","notas acuáticas"], notasCorazon:["jazmín","peonía","rosa"], notasFondo:["musk","cedro","ámbar"], intensidad:5, dulzura:5, frescura:7, sofisticacion:6, versatilidad:7, beast:4, duracion:6, estaciones:["primavera","verano"], ocasiones:["diario","oficina","verano"], personalidad:["fresca","natural","luminosa"], perfilX: 5, perfilY: 6 },
+  { id:33, nombre:"ERBA PURA", marca:"Lattafa", precio:55000, genero:"Unisex", familia:"Floral", ref:"Xerjoff Erba Pura", notasSalida:["bergamota","limón","especias"], notasCorazon:["frutas","flores blancas"], notasFondo:["musk","ámbar","sándalo"], intensidad:7, dulzura:7, frescura:5, sofisticacion:8, versatilidad:6, beast:6, duracion:8, estaciones:["primavera","otoño","verano"], ocasiones:["evento","noche","cita"], personalidad:["sofisticado","exótico","elegante"], perfilX: 6, perfilY: 4 },
+  { id:34, nombre:"RAVE Rouge", marca:"Lattafa", precio:55000, genero:"Unisex", familia:"Frutal", ref:"Maison Francis Kurkdjian Baccarat Rouge 540", notasSalida:["azafrán","jazmín"], notasCorazon:["almendra","ámbar"], notasFondo:["madera de cedro","resina","musk"], intensidad:8, dulzura:7, frescura:3, sofisticacion:9, versatilidad:6, beast:8, duracion:9, estaciones:["invierno","otoño","primavera"], ocasiones:["evento","noche","cita"], personalidad:["elite","único","adictivo"], perfilX: 7, perfilY: 2 },
+  { id:35, nombre:"RAVE Intense", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Fresca", ref:"Ralph Lauren Polo Blue", notasSalida:["cantalupo","pepino","notas acuáticas"], notasCorazon:["salvia","geranio"], notasFondo:["musk","madera","ámbar"], intensidad:5, dulzura:4, frescura:8, sofisticacion:6, versatilidad:8, beast:4, duracion:6, estaciones:["verano","primavera"], ocasiones:["diario","oficina","verano","gym"], personalidad:["fresco","deportivo","limpio"], perfilX: 4, perfilY: 7 },
+  { id:36, nombre:"YARA Elixir", marca:"Lattafa", precio:60000, genero:"Femenino", familia:"Floral", ref:"Kayali Yum Pistachio Gelato", notasSalida:["pistacho","nuez"], notasCorazon:["flor de azahar","jazmín"], notasFondo:["vainilla","sándalo","musk"], intensidad:6, dulzura:7, frescura:4, sofisticacion:7, versatilidad:5, beast:5, duracion:7, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","cita","evento"], personalidad:["dulce","sofisticada","cálida"], perfilX: 6, perfilY: 3 },
+  { id:37, nombre:"ASAD Zanzibar", marca:"Lattafa", precio:55000, genero:"Masculino", familia:"Fresca", ref:"Valentino Uomo Born In Roma Purple", notasSalida:["violeta","salvia"], notasCorazon:["jengibre","especias"], notasFondo:["vetiver","madera","musk"], intensidad:6, dulzura:4, frescura:6, sofisticacion:7, versatilidad:7, beast:5, duracion:7, estaciones:["primavera","otoño","verano"], ocasiones:["diario","noche","cita"], personalidad:["moderno","fresco","elegante"], perfilX: 4, perfilY: 5 },
+  { id:38, nombre:"ASAD Bourbon", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Oriental", ref:"Azzaro The Most Wanted", notasSalida:["jengibre","cítricos"], notasCorazon:["cuero","lavanda"], notasFondo:["benjuí","madera","musk"], intensidad:8, dulzura:6, frescura:3, sofisticacion:7, versatilidad:5, beast:7, duracion:8, estaciones:["invierno","otoño"], ocasiones:["noche","evento","cita"], personalidad:["intenso","seductor","nocturno"], perfilX: 6, perfilY: 2 },
+  { id:39, nombre:"ASAD Elixir", marca:"Lattafa", precio:45000, genero:"Masculino", familia:"Amaderada", ref:"Hugo Boss Bottled Absolu", notasSalida:["manzana","especias"], notasCorazon:["canela","geranio"], notasFondo:["madera","ámbar","musk"], intensidad:7, dulzura:4, frescura:4, sofisticacion:7, versatilidad:6, beast:6, duracion:8, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","cita","evento"], personalidad:["cálido","elegante","masculino"], perfilX: 4, perfilY: 3 },
+  { id:40, nombre:"9PM Elixir", marca:"Afnan", precio:45000, genero:"Masculino", familia:"Oriental", ref:"JPG Le Male Le Parfum / Armani Code Profumo", notasSalida:["lavanda","menta","cardamomo"], notasCorazon:["naranja","canela"], notasFondo:["vainilla","madera","ámbar"], intensidad:8, dulzura:6, frescura:4, sofisticacion:7, versatilidad:6, beast:7, duracion:9, estaciones:["invierno","otoño","primavera"], ocasiones:["noche","cita","evento"], personalidad:["seductor","intenso","cálido"], perfilX: 6, perfilY: 3 },
+  { id:41, nombre:"9PM Black", marca:"Afnan", precio:55000, genero:"Masculino", familia:"Oriental", ref:"Armani Code A-List / D&G The One Mysterious Night", notasSalida:["cítricos","pimienta"], notasCorazon:["lavanda","anís"], notasFondo:["cuero","madera","vainilla"], intensidad:8, dulzura:5, frescura:4, sofisticacion:8, versatilidad:6, beast:7, duracion:9, estaciones:["invierno","otoño"], ocasiones:["noche","evento","cita"], personalidad:["misterioso","elegante","nocturno"], perfilX: 5, perfilY: 3 },
+  { id:42, nombre:"9AM Dive", marca:"Afnan", precio:45000, genero:"Masculino", familia:"Fresca", ref:"Versace Pour Homme Dylan Blue / Polo Deep Blue", notasSalida:["bergamota","mandarina","notas acuáticas"], notasCorazon:["pimienta","geranio"], notasFondo:["incienso","madera","musk"], intensidad:5, dulzura:3, frescura:8, sofisticacion:7, versatilidad:8, beast:4, duracion:6, estaciones:["verano","primavera"], ocasiones:["diario","oficina","verano","gym"], personalidad:["fresco","limpio","moderno"], perfilX: 3, perfilY: 7 },
+  { id:43, nombre:"HAWAS Black", marca:"Rasasi", precio:55000, genero:"Masculino", familia:"Amaderada", ref:"Nishane Hacivat", notasSalida:["bergamota","limón","piña"], notasCorazon:["jazmín","pachulí"], notasFondo:["vetiver","madera de cedro","musk"], intensidad:7, dulzura:4, frescura:6, sofisticacion:8, versatilidad:7, beast:6, duracion:8, estaciones:["primavera","verano","otoño"], ocasiones:["diario","oficina","noche","evento"], personalidad:["sofisticado","fresco","elegante"], perfilX: 4, perfilY: 5 },
+  { id:44, nombre:"AMEER AL ARAB Black", marca:"Asdaaf by Lattafa", precio:55000, genero:"Masculino", familia:"Amaderada", ref:"Yves Saint Laurent La Nuit de l'Homme", notasSalida:["cardamomo","bergamota","lavanda"], notasCorazon:["cedro","vetiver"], notasFondo:["cumaru","musk","ámbar"], intensidad:7, dulzura:4, frescura:4, sofisticacion:7, versatilidad:7, beast:6, duracion:8, estaciones:["otoño","invierno","primavera"], ocasiones:["noche","cita","evento"], personalidad:["seductor","nocturno","elegante"], perfilX: 4, perfilY: 3 },
+  { id:45, nombre:"AMEER AL ARAB Imperium", marca:"Asdaaf by Lattafa", precio:55000, genero:"Masculino", familia:"Amaderada", ref:"Creed Royal Water", notasSalida:["menta","limón","bergamota"], notasCorazon:["jazmín","grosella negra"], notasFondo:["musk","ámbar gris","cedro"], intensidad:6, dulzura:3, frescura:7, sofisticacion:9, versatilidad:7, beast:5, duracion:7, estaciones:["primavera","verano","otoño"], ocasiones:["evento","diario","oficina"], personalidad:["real","sofisticado","fresco"], perfilX: 3, perfilY: 6 },
+  { id:46, nombre:"AMEER AL ARAB Sugar Crown", marca:"Asdaaf by Lattafa", precio:55000, genero:"Femenino", familia:"Gourmand", ref:"Armani My Way / Mugler Angel Nova", notasSalida:["frutas rojas","bergamota"], notasCorazon:["rosa","jazmín"], notasFondo:["vainilla","pachulí","musk"], intensidad:7, dulzura:9, frescura:4, sofisticacion:7, versatilidad:5, beast:6, duracion:8, estaciones:["invierno","otoño","primavera"], ocasiones:["noche","cita","evento"], personalidad:["dulce","femenina","adictiva"], perfilX: 8, perfilY: 3 },
+  { id:47, nombre:"AMEER AL ARAB Prive Rose", marca:"Asdaaf by Lattafa", precio:55000, genero:"Femenino", familia:"Floral", ref:"Parfums de Marly Delina Exclusif", notasSalida:["litchi","ruibarbo","nuez moscada"], notasCorazon:["rosa turca","musk","peonía"], notasFondo:["vetiver","cedro","cashmeran"], intensidad:7, dulzura:6, frescura:4, sofisticacion:9, versatilidad:6, beast:7, duracion:8, estaciones:["otoño","invierno","primavera"], ocasiones:["evento","noche","cita"], personalidad:["elite","femenina","sofisticada"], perfilX: 6, perfilY: 3 },
+];
+
+// ================================
+// QUESTIONS: 6 preguntas con scoring multidimensional
+// ================================
+const questions = [
+  {
+    id: 1,
+    text: "¿Para quién es el perfume?",
+    hint: "Filtramos el catálogo por género y versatilidad",
+    options: [
+      { label: "Para él", desc: "Perfumes masculinos del catálogo", score: p => p.genero === "Masculino" ? 15 : (p.genero === "Unisex" ? 8 : 0) },
+      { label: "Para ella", desc: "Perfumes femeninos del catálogo", score: p => p.genero === "Femenino" ? 15 : (p.genero === "Unisex" ? 8 : 0) },
+      { label: "Sin género", desc: "Unisex, para cualquier persona", score: p => p.genero === "Unisex" ? 15 : (p.versatilidad >= 7 ? 6 : 2) },
+      { label: "Me da igual", desc: "El mejor match sin importar género", score: p => 10 }
+    ]
+  },
+  {
+    id: 2,
+    text: "¿Qué familia olfativa te atrae?",
+    hint: "Elegí la que te haga clic al leerla",
+    options: [
+      { label: "Fresca & Limpia", desc: "Cítricos, acuáticos, aire puro — como salir de la ducha", score: p => {
+        let s = p.familia === "Fresca" ? 14 : 0;
+        s += p.frescura >= 7 ? 4 : (p.frescura >= 5 ? 2 : 0);
+        s += p.notasSalida.some(n => n.includes("limón") || n.includes("bergamota") || n.includes("acuátic")) ? 2 : 0;
+        return s;
+      }},
+      { label: "Dulce & Adictiva", desc: "Vainilla, caramelo, praliné — que te hagan preguntar qué usás", score: p => {
+        let s = p.familia === "Gourmand" ? 14 : 0;
+        s += p.dulzura >= 7 ? 4 : (p.dulzura >= 5 ? 2 : 0);
+        s += p.notasFondo.some(n => n.includes("vainilla") || n.includes("caramelo") || n.includes("praliné")) ? 2 : 0;
+        return s;
+      }},
+      { label: "Floral & Elegante", desc: "Rosa, jazmín, peonía — sofisticación sin gritar", score: p => {
+        let s = p.familia === "Floral" ? 14 : 0;
+        s += p.sofisticacion >= 7 ? 3 : (p.sofisticacion >= 5 ? 1 : 0);
+        s += p.notasCorazon.some(n => n.includes("rosa") || n.includes("jazmín") || n.includes("peonía")) ? 3 : 0;
+        return s;
+      }},
+      { label: "Amaderada & Profunda", desc: "Oud, cedro, cuero, pachulí — para dejar huella", score: p => {
+        let s = p.familia === "Amaderada" ? 14 : 0;
+        s += p.intensidad >= 7 ? 3 : (p.intensidad >= 5 ? 1 : 0);
+        s += p.notasFondo.some(n => n.includes("cedro") || n.includes("pachulí") || n.includes("cuero") || n.includes("oud")) ? 3 : 0;
+        return s;
+      }},
+      { label: "Especiada & Audaz", desc: "Pimienta, canela, cardamomo — para quienes no pasan desapercibidos", score: p => {
+        let s = p.familia === "Especiada" ? 14 : 0;
+        s += p.intensidad >= 6 ? 3 : 0;
+        s += p.notasSalida.some(n => n.includes("pimienta") || n.includes("canela") || n.includes("cardamomo")) ? 3 : 0;
+        return s;
+      }},
+      { label: "Frutal & Jugosa", desc: "Manzana, piña, cereza — energía y juventud", score: p => {
+        let s = p.familia === "Frutal" ? 14 : 0;
+        s += p.frescura >= 5 ? 3 : 0;
+        s += p.notasSalida.some(n => n.includes("manzana") || n.includes("piña") || n.includes("cereza") || n.includes("frutas")) ? 3 : 0;
+        return s;
+      }}
+    ]
+  },
+  {
+    id: 3,
+    text: "¿Qué intensidad y proyección buscás?",
+    hint: "¿Querés que se note o que sea solo para vos?",
+    options: [
+      { label: "Sutil, íntimo", desc: "Se siente cerca, piel limpia, 4-6 horas", score: p => {
+        let s = p.intensidad <= 4 ? 12 : (p.intensidad <= 5 ? 6 : 0);
+        s += p.beast <= 3 ? 3 : 0;
+        s += p.duracion <= 6 ? 2 : 0;
+        return s;
+      }},
+      { label: "Moderado, social", desc: "Proyección arm's length, 6-8 horas", score: p => {
+        let s = (p.intensidad >= 5 && p.intensidad <= 6) ? 12 : (Math.abs(p.intensidad - 5.5) <= 1.5 ? 6 : 1);
+        s += (p.beast >= 4 && p.beast <= 5) ? 3 : (Math.abs(p.beast - 4.5) <= 1.5 ? 1 : 0);
+        s += (p.duracion >= 6 && p.duracion <= 7) ? 2 : 0;
+        return s;
+      }},
+      { label: "Intenso, con rastro", desc: "Sillage marcado, 8-10 horas, se siente al entrar", score: p => {
+        let s = (p.intensidad >= 7 && p.intensidad <= 8) ? 12 : (p.intensidad >= 6 ? 5 : 0);
+        s += (p.beast >= 6 && p.beast <= 7) ? 3 : (p.beast >= 5 ? 1 : 0);
+        s += (p.duracion >= 8 && p.duracion <= 9) ? 2 : (p.duracion >= 7 ? 1 : 0);
+        return s;
+      }},
+      { label: "Beast Mode", desc: "Que lo huelan antes de verte, 10+ horas, proyección extrema", score: p => {
+        let s = p.intensidad >= 8 ? 12 : (p.intensidad >= 7 ? 5 : 0);
+        s += p.beast >= 7 ? 4 : (p.beast >= 6 ? 2 : 0);
+        s += p.duracion >= 9 ? 3 : (p.duracion >= 8 ? 1 : 0);
+        return s;
+      }}
+    ]
+  },
+  {
+    id: 4,
+    text: "¿En qué momento lo usarías principalmente?",
+    hint: "Elegí el contexto más frecuente",
+    options: [
+      { label: "Todo el día", desc: "Trabajo, facultad, salidas casuales, gym", score: p => {
+        let s = p.ocasiones.includes("diario") ? 10 : 0;
+        s += p.ocasiones.includes("oficina") ? 4 : 0;
+        s += p.versatilidad >= 8 ? 4 : (p.versatilidad >= 6 ? 2 : 0);
+        s += p.frescura >= 6 ? 2 : 0;
+        return s;
+      }},
+      { label: "Noches & Citas", desc: "Bares, cenas, encuentros, salidas", score: p => {
+        let s = p.ocasiones.includes("noche") ? 10 : 0;
+        s += p.ocasiones.includes("cita") ? 4 : 0;
+        s += p.intensidad >= 6 ? 3 : 0;
+        s += p.dulzura >= 5 || p.sofisticacion >= 7 ? 2 : 0;
+        return s;
+      }},
+      { label: "Eventos especiales", desc: "Fiestas, celebraciones, momentos únicos", score: p => {
+        let s = p.ocasiones.includes("evento") ? 10 : 0;
+        s += p.sofisticacion >= 8 ? 5 : (p.sofisticacion >= 6 ? 2 : 0);
+        s += p.beast >= 6 ? 3 : 0;
+        s += p.intensidad >= 7 ? 2 : 0;
+        return s;
+      }},
+      { label: "Verano / Calor", desc: "Días de playa, calor intenso, frescura necesaria", score: p => {
+        let s = p.estaciones.includes("verano") ? 10 : 0;
+        s += p.frescura >= 7 ? 5 : (p.frescura >= 5 ? 2 : 0);
+        s += p.intensidad <= 6 ? 3 : 0;
+        s += p.ocasiones.includes("verano") ? 2 : 0;
+        return s;
+      }},
+      { label: "Invierno / Frío", desc: "Abrigo, intenso, que corte el frío", score: p => {
+        let s = p.estaciones.includes("invierno") ? 10 : 0;
+        s += p.intensidad >= 7 ? 4 : (p.intensidad >= 5 ? 2 : 0);
+        s += p.dulzura >= 6 || p.familia === "Oriental" ? 3 : 0;
+        s += p.duracion >= 8 ? 2 : 0;
+        return s;
+      }}
+    ]
+  },
+  {
+    id: 5,
+    text: "¿Qué vibe querés transmitir?",
+    hint: "El perfume como extensión de tu personalidad",
+    options: [
+      { label: "Elegante & Refinado", desc: "Clase sin gritar, detalles que hablan", score: p => {
+        let s = p.sofisticacion >= 8 ? 12 : (p.sofisticacion >= 6 ? 5 : 1);
+        s += p.personalidad.includes("elegante") || p.personalidad.includes("sofisticado") || p.personalidad.includes("refinado") ? 4 : 0;
+        s += p.familia === "Amaderada" || p.familia === "Floral" ? 2 : 0;
+        return s;
+      }},
+      { label: "Sexy & Seductor", desc: "Atracción magnética, que no puedan ignorarte", score: p => {
+        let s = (p.familia === "Oriental" || p.familia === "Gourmand") && p.intensidad >= 6 ? 10 : 0;
+        s += p.personalidad.includes("seductor") || p.personalidad.includes("adictivo") ? 5 : 0;
+        s += p.beast >= 6 ? 3 : 0;
+        s += p.dulzura >= 6 || p.intensidad >= 7 ? 2 : 0;
+        return s;
+      }},
+      { label: "Fresco & Natural", desc: "Limpio, juvenil, energía pura", score: p => {
+        let s = (p.familia === "Fresca" || p.familia === "Frutal") && p.frescura >= 6 ? 10 : 0;
+        s += p.personalidad.includes("fresco") || p.personalidad.includes("limpio") || p.personalidad.includes("energético") ? 5 : 0;
+        s += p.intensidad <= 6 ? 3 : 0;
+        s += p.frescura >= 7 ? 2 : 0;
+        return s;
+      }},
+      { label: "Misterioso & Diferente", desc: "Marcar territorio propio, no ser uno más", score: p => {
+        let s = (p.familia === "Amaderada" || p.familia === "Especiada") && p.sofisticacion >= 7 ? 10 : 0;
+        s += p.personalidad.includes("misterioso") || p.personalidad.includes("único") || p.personalidad.includes("diferente") ? 5 : 0;
+        s += p.familia === "Oriental" ? 3 : 0;
+        s += p.sofisticacion >= 8 ? 2 : 0;
+        return s;
+      }},
+      { label: "Dulce & Cercano", desc: "Confort, abrazo olfativo, confianza", score: p => {
+        let s = p.familia === "Gourmand" || p.dulzura >= 8 ? 12 : (p.dulzura >= 6 ? 5 : 0);
+        s += p.personalidad.includes("dulce") || p.personalidad.includes("cálida") || p.personalidad.includes("cómoda") ? 4 : 0;
+        s += p.notasFondo.some(n => n.includes("vainilla") || n.includes("caramelo") || n.includes("praliné")) ? 3 : 0;
+        return s;
+      }},
+      { label: "Poderoso & Audaz", desc: "Presencia, dominio, que se sienta tu llegada", score: p => {
+        let s = p.intensidad >= 8 || p.beast >= 7 ? 12 : (p.intensidad >= 6 ? 5 : 0);
+        s += p.personalidad.includes("poderoso") || p.personalidad.includes("audaz") || p.personalidad.includes("intenso") ? 4 : 0;
+        s += p.familia === "Oriental" || p.familia === "Especiada" ? 3 : 0;
+        s += p.duracion >= 8 ? 1 : 0;
+        return s;
+      }}
+    ]
+  },
+  {
+    id: 6,
+    text: "¿Qué nota no puede faltar?",
+    hint: "Elegí la que te vuelva loco/a al leerla",
+    options: [
+      { label: "Vainilla & Caramelo", desc: "Dulzura cálida, gourmand, adictiva", score: p => {
+        let s = p.notasSalida.some(n => n.includes("vainilla") || n.includes("caramelo")) ? 6 : 0;
+        s += p.notasCorazon.some(n => n.includes("vainilla") || n.includes("caramelo") || n.includes("praliné")) ? 6 : 0;
+        s += p.notasFondo.some(n => n.includes("vainilla") || n.includes("caramelo") || n.includes("haba tonka")) ? 6 : 0;
+        s += p.dulzura >= 7 ? 3 : 0;
+        return s;
+      }},
+      { label: "Rosa & Jazmín", desc: "Floral clásico, romanticismo, elegancia", score: p => {
+        let s = p.notasSalida.some(n => n.includes("rosa") || n.includes("jazmín")) ? 6 : 0;
+        s += p.notasCorazon.some(n => n.includes("rosa") || n.includes("jazmín") || n.includes("peonía") || n.includes("flor")) ? 8 : 0;
+        s += p.notasFondo.some(n => n.includes("rosa") || n.includes("jazmín")) ? 4 : 0;
+        s += p.familia === "Floral" ? 3 : 0;
+        return s;
+      }},
+      { label: "Cítricos & Acuáticos", desc: "Limón, bergamota, mar, frescura", score: p => {
+        let s = p.notasSalida.some(n => n.includes("limón") || n.includes("bergamota") || n.includes("mandarina") || n.includes("naranja") || n.includes("acuátic")) ? 10 : 0;
+        s += p.notasCorazon.some(n => n.includes("cítric") || n.includes("acuátic")) ? 4 : 0;
+        s += p.frescura >= 7 ? 3 : 0;
+        return s;
+      }},
+      { label: "Cuero & Maderas", desc: "Cedro, pachulí, cuero, oud, profundidad", score: p => {
+        let s = p.notasFondo.some(n => n.includes("cedro") || n.includes("pachulí") || n.includes("cuero") || n.includes("oud") || n.includes("sándalo") || n.includes("vetiver")) ? 10 : 0;
+        s += p.notasCorazon.some(n => n.includes("madera") || n.includes("pachulí") || n.includes("cuero")) ? 4 : 0;
+        s += p.familia === "Amaderada" ? 3 : 0;
+        return s;
+      }},
+      { label: "Especias & Pimienta", desc: "Cardamomo, canela, jengibre, audacia", score: p => {
+        let s = p.notasSalida.some(n => n.includes("pimienta") || n.includes("cardamomo") || n.includes("canela") || n.includes("jengibre") || n.includes("especias")) ? 10 : 0;
+        s += p.notasCorazon.some(n => n.includes("pimienta") || n.includes("canela") || n.includes("nutmeg")) ? 4 : 0;
+        s += p.familia === "Especiada" || p.familia === "Oriental" ? 3 : 0;
+        return s;
+      }},
+      { label: "Frutas & Dulces", desc: "Cereza, manzana, piña, frutas rojas", score: p => {
+        let s = p.notasSalida.some(n => n.includes("cereza") || n.includes("manzana") || n.includes("piña") || n.includes("frutas") || n.includes("litchi")) ? 10 : 0;
+        s += p.notasCorazon.some(n => n.includes("frutas") || n.includes("cereza") || n.includes("almendra")) ? 4 : 0;
+        s += p.familia === "Frutal" || p.familia === "Gourmand" ? 3 : 0;
+        return s;
+      }}
+    ]
+  }
+];
+
+// ================================
+// ENGINE
+// ================================
+let currentQ = 0;
+let scores = {};
+
+function initScores() {
+  scores = {};
+  perfumes.forEach(p => scores[p.id] = 0);
+}
+
+function startQuiz() {
+  initScores();
+  currentQ = 0;
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quiz').style.display = 'flex';
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('results').style.display = 'none';
+  renderQuestion();
+  updateProgress();
+}
+
+function renderQuestion() {
+  const box = document.getElementById('questionsBox');
+  const q = questions[currentQ];
+
+  let html = `<div class="question-card active" id="q${currentQ}">
+    <div class="question-num">Pregunta ${currentQ + 1} de ${questions.length}</div>
+    <h3 class="question-text">${q.text}</h3>
+    <p class="question-hint">${q.hint}</p>
+    <div class="options-grid">`;
+
+  const labels = ["A","B","C","D","E","F"];
+  q.options.forEach((opt, idx) => {
+    html += `<div class="option" onclick="selectOption(${idx})">
+      <div class="option-idx">${labels[idx]}</div>
+      <div class="option-body">
+        <div class="option-label">${opt.label}</div>
+        <div class="option-desc">${opt.desc}</div>
+      </div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+  box.innerHTML = html;
+}
+
+function selectOption(idx) {
+  const q = questions[currentQ];
+  const opt = q.options[idx];
+
+  perfumes.forEach(p => {
+    const pts = opt.score(p);
+    scores[p.id] += pts;
+  });
+
+  currentQ++;
+
+  if (currentQ < questions.length) {
+    renderQuestion();
+    updateProgress();
+  } else {
+    showResults();
+  }
+}
+
+function updateProgress() {
+  const pct = ((currentQ) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressStep').textContent = `Paso ${currentQ + 1}`;
+}
+
+function showResults() {
+  document.getElementById('quiz').style.display = 'none';
+  const res = document.getElementById('results');
+  res.classList.add('active');
+  res.style.display = 'block';
+
+  const maxScore = 75;
+  const ranked = perfumes.map(p => ({ ...p, total: scores[p.id] }))
+    .sort((a, b) => b.total - a.total);
+
+  const top3 = ranked.slice(0, 3);
+
+  const avgX = Math.round(top3.reduce((sum, p) => sum + p.perfilX, 0) / 3);
+  const avgY = Math.round(top3.reduce((sum, p) => sum + p.perfilY, 0) / 3);
+
+  document.querySelectorAll('.map-cell').forEach(c => c.classList.remove('active'));
+  if (avgX <= 5 && avgY >= 5) document.getElementById('map-fresco-seco').classList.add('active');
+  else if (avgX > 5 && avgY >= 5) document.getElementById('map-fresco-dulce').classList.add('active');
+  else if (avgX <= 5 && avgY < 5) document.getElementById('map-intenso-seco').classList.add('active');
+  else document.getElementById('map-intenso-dulce').classList.add('active');
+
+  let html = '';
+  top3.forEach((p, idx) => {
+    const pct = Math.min(100, Math.round((p.total / maxScore) * 100));
+    const isBest = idx === 0;
+    const genIcon = p.genero === 'Masculino' ? '♂' : (p.genero === 'Femenino' ? '♀' : '⚥');
+    const notasStr = [...p.notasSalida.slice(0,2), ...p.notasCorazon.slice(0,1), ...p.notasFondo.slice(0,2)].join(' · ');
+
+    html += `<div class="perfume-result ${isBest ? 'best' : ''}">
+      <div class="result-header-row">
+        <div class="result-rank">${idx + 1}</div>
+        <div class="result-meta">
+          <div class="result-name">${p.nombre}</div>
+          <div class="result-brand">${p.marca}</div>
+        </div>
+        <div class="result-match">
+          <div class="match-pct">${pct}%</div>
+          <div class="match-label">match</div>
+        </div>
+      </div>
+      <div class="result-bar-wrap">
+        <div class="result-bar"><div class="result-bar-fill" data-width="${pct}%"></div></div>
+      </div>
+      <div class="result-details">
+        <div class="detail-row">
+          <span class="detail-tag">${genIcon} ${p.genero}</span>
+          <span class="detail-tag highlight">${p.familia}</span>
+          <span class="detail-tag">Intensidad ${p.intensidad}/10</span>
+          <span class="detail-tag">${p.duracion}h duración</span>
+        </div>
+        <div class="result-ref">Inspirado en <strong>${p.ref}</strong></div>
+        <div class="result-price">$${p.precio.toLocaleString('es-AR')}</div>
+        <div class="result-notes"><span>Notas:</span> ${notasStr}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('topPerfumes').innerHTML = html;
+
+  setTimeout(() => {
+    document.querySelectorAll('.result-bar-fill').forEach(bar => {
+      bar.style.width = bar.getAttribute('data-width');
+    });
+  }, 200);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function restartQuiz() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').classList.remove('active');
+  startQuiz();
+}
+</script>
+
+</body>
+</html>
